@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: philipe
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: imagembase
+    container_name: ticket-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - /home/philipe/www/ticket:/var/www
+    networks:
+      - ticket
+
+  nginx:
+    image: nginx:alpine
+    container_name: ticket-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - /home/philipe/www/ticket:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d
+    networks:
+      - ticket
+
+networks:
+  ticket:
+    driver: bridge
